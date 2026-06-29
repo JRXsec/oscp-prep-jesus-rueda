@@ -3,12 +3,20 @@
 Repositorio personal de preparación ofensiva orientada a pentesting, documentación técnica y
 metodología OSCP.
 
+
+
 Actualmente estoy reforzando:
+
 -Enumeración de servicios.
+
 -Linux privilege escalation.
+
 -Web application testing.
+
 -Uso de Burp Suite.
+
 -Redacción de informes técnicos.
+
 -Metodología de pentesting en entornos autorizados.
 
 
