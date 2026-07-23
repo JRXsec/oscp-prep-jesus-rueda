@@ -1,18 +1,36 @@
-````md
-# 🐧 Linux Privilege Escalation
+# Linux Privilege Escalation
 
 # Metodología
 
 1. Enumerar el sistema.
+**Recolectar información del entorno para detectar vectores de escalada.**
+
 2. Identificar usuarios y grupos.
+**Saber quién eres y qué permisos tienes.**
+
 3. Revisar permisos.
+**Detectar configuraciones débiles o accesos indebidos.**
+
 4. Buscar binarios SUID/SGID.
+**Binarios que ejecutan con privilegios elevados.**
+
 5. Revisar tareas programadas.
+**Cronjobs vulnerables que permiten ejecución de comandos.**
+
 6. Buscar credenciales.
+**Contraseñas en texto plano, claves SSH, archivos sensibles.**
+
 7. Enumerar servicios.
+**Procesos y servicios que pueden ser explotables.**
+
 8. Revisar capacidades (Capabilities).
+**Binarios con permisos especiales que permiten escalada.**
+
 9. Analizar versiones del sistema.
-10. Documentar todos los hallazgos.
+**Kernel vulnerable, software desactualizado.**
+
+10. Documentar hallazgos.
+**Registrar cada paso para reproducibilidad y reporte.**
 
 ---
 
@@ -20,45 +38,38 @@
 
 ## Kernel
 
-```bash
-uname -a
-```
+uname -a  
+**Versión del kernel.**
 
-```bash
-cat /etc/os-release
-```
+cat /etc/os-release  
+**Distribución y versión.**
 
 ---
 
 ## Usuario actual
 
-```bash
-whoami
-```
+whoami  
+**Usuario actual.**
 
-```bash
-id
-```
+id  
+**UID, GID y grupos.**
 
-```bash
-groups
-```
+groups  
+**Grupos adicionales.**
 
 ---
 
 ## Usuarios
 
-```bash
-cat /etc/passwd
-```
+cat /etc/passwd  
+**Lista de usuarios del sistema.**
 
 ---
 
 ## Variables de entorno
 
-```bash
-env
-```
+env  
+**Variables que pueden contener credenciales.**
 
 ---
 
@@ -66,41 +77,32 @@ env
 
 ## Procesos
 
-```bash
-ps aux
-```
+ps aux  
+**Procesos en ejecución.**
 
 ---
 
 ## Servicios
 
-```bash
-systemctl list-units --type=service
-```
+systemctl list-units --type=service  
+**Servicios activos.**
 
 ---
 
-## Puertos abiertos
+## Puertos internos
 
-```bash
-ss -tuln
-```
-
-```bash
-netstat -tuln
-```
+ss -tuln  
+**Puertos internos accesibles.**
 
 ---
 
 ## Cron Jobs
 
-```bash
-crontab -l
-```
+crontab -l  
+**Tareas del usuario actual.**
 
-```bash
-ls -la /etc/cron*
-```
+ls -la /etc/cron*  
+**Tareas globales.**
 
 ---
 
@@ -108,41 +110,36 @@ ls -la /etc/cron*
 
 ## SUID
 
-```bash
-find / -perm -4000 -type f 2>/dev/null
-```
+find / -perm -4000 -type f 2>/dev/null  
+**Binarios que ejecutan como root.**
 
 ---
 
 ## SGID
 
-```bash
-find / -perm -2000 -type f 2>/dev/null
-```
+find / -perm -2000 -type f 2>/dev/null  
+**Binarios que ejecutan con permisos de grupo elevados.**
 
 ---
 
 ## Writable Files
 
-```bash
-find / -writable -type f 2>/dev/null
-```
+find / -writable -type f 2>/dev/null  
+**Archivos editables.**
 
 ---
 
 ## Writable Directories
 
-```bash
-find / -writable -type d 2>/dev/null
-```
+find / -writable -type d 2>/dev/null  
+**Directorios editables.**
 
 ---
 
 # Capabilities
 
-```bash
-getcap -r / 2>/dev/null
-```
+getcap -r / 2>/dev/null  
+**Binarios con capacidades especiales.**
 
 ---
 
@@ -150,52 +147,57 @@ getcap -r / 2>/dev/null
 
 ## Historial
 
-```bash
-history
-```
+history  
+**Comandos que pueden contener contraseñas.**
 
 ---
 
 ## Claves SSH
 
-```bash
-ls -la ~/.ssh
-```
+ls -la ~/.ssh  
+**Claves privadas y autorizadas.**
+
+ssh2john id_rsa > hash.txt  
+**Extrae hash de clave SSH.**
+
+john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt  
+**Fuerza bruta sobre passphrase.**
 
 ---
 
 ## Archivos interesantes
 
-- config.php
-- .env
-- settings.py
-- wp-config.php
-- backup.zip
-- backup.tar.gz
+config.php  
+**Credenciales de DB.**
 
----
+.env  
+**Variables sensibles.**
 
-# Variables de entorno
+settings.py  
+**Configuraciones de apps.**
 
-```bash
-printenv
-```
+wp-config.php  
+**Credenciales de WordPress.**
+
+backup.zip  
+**Datos sensibles comprimidos.**
+
+backup.tar.gz  
+**Credenciales antiguas.**
 
 ---
 
 # Montajes
 
-```bash
-mount
-```
+mount  
+**Puntos de montaje vulnerables.**
 
 ---
 
 # Discos
 
-```bash
-df -h
-```
+df -h  
+**Espacio y particiones.**
 
 ---
 
@@ -203,71 +205,118 @@ df -h
 
 ## Interfaces
 
-```bash
-ip a
-```
+ip a  
+**Interfaces activas.**
 
 ---
 
 ## Rutas
 
-```bash
-ip route
-```
+ip route  
+**Rutas configuradas.**
 
 ---
 
 ## Conexiones
 
-```bash
-ss -tunp
-```
+ss -tunp  
+**Conexiones activas.**
 
 ---
 
-# Herramientas
+# Herramientas que usas
 
-## LinPEAS
+./linpeas.sh  
+**Enumeración automática.**
 
-- Enumeración automática de Linux.
+./pspy64  
+**Monitorización de procesos.**
 
-## pspy
+gtfobins  
+**Técnicas de escalada por binarios.**
 
-- Monitorización de procesos sin privilegios.
+---
 
-## GTFOBins
+# Servicios que usas
 
-- Referencia de binarios con funcionalidades útiles relacionadas con privilegios.
+## SMB
+
+enum4linux -a IP  
+**Enumeración completa SMB.**
+
+smbclient -L //IP/  
+**Listar shares.**
+
+---
+
+## Redis
+
+redis-cli  
+**Acceso a Redis.**
+
+redis-cli info  
+**Información del servidor.**
+
+---
+
+## MySQL
+
+mysql -u root -p  
+**Acceso a MySQL.**
+
+---
+
+## SSH
+
+ssh user@IP  
+**Acceso remoto.**
+
+hydra -l user -P /usr/share/wordlists/rockyou.txt ssh://IP  
+**Fuerza bruta SSH.**
+
+---
+
+## Netcat
+
+nc -lvnp 4444  
+**Escuchar shell reversa.**
+
+nc IP 4444  
+**Conectar a shell.**
 
 ---
 
 # Binarios importantes
 
-- bash
-- sh
-- vim
-- nano
-- less
-- find
-- tar
-- cp
-- mv
-- python
-- perl
-- awk
-- sed
-- env
+bash  
+sh  
+find  
+tar  
+python  
+perl  
+awk  
+sed  
+env  
+**Binarios útiles para escalada.**
 
 ---
 
 # Recursos
 
-- GTFOBins
-- LinPEAS
-- pspy
-- Hack The Box Academy
-- TryHackMe
-- PayloadsAllTheThings
+GTFOBins  
+LinPEAS  
+pspy  
+PayloadsAllTheThings  
+Hack The Box Academy  
+TryHackMe  
+**Recursos útiles para PrivEsc.**
+
+---
+
+# Notas
+
+**Añadir técnicas aprendidas y referencias útiles durante laboratorios y máquinas.**
+
 
 ---
 
