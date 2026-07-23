@@ -313,14 +313,3 @@ TryHackMe
 
 ---
 
-# Notas
-
-**Añadir técnicas aprendidas y referencias útiles durante laboratorios y máquinas.**
-
-
----
-
-# Notas
-
-Añadir observaciones, técnicas aprendidas y referencias útiles encontradas durante laboratorios y máquinas.
-````
