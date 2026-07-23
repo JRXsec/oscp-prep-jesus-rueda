@@ -1,40 +1,47 @@
-# Metodología para vulnerar una máquina
+# Enumeración de una máquina
 
 ## 1. Reconocimiento
 
-- Identificar IP, dominio y DNS.
-**Recopilar información inicial del objetivo.**
+Identificar IP, dominio y DNS.  
+**whois dominio**  
+**nslookup dominio**  
+**dig dominio**  
 
-- Analizar banners y tecnologías.
-**whatweb, wappalyzer para detectar stack.**
+Analizar banners y tecnologías.  
+**whatweb URL**  
+**wappalyzer (browser extension)**  
 
-- Descubrir subdominios.
-**gobuster dns, wfuzz para ampliar superficie de ataque.**
+Descubrir subdominios.  
+**gobuster dns -d dominio -w wordlist**  
+**wfuzz -w wordlist -u dominio -H "Host: FUZZ.dominio"**  
 
-- Buscar archivos públicos.
-**robots.txt, sitemap, .git, .env para obtener rutas y credenciales.**
+Buscar archivos públicos.  
+**curl URL/robots.txt**  
+**curl URL/sitemap.xml**  
+**Buscar .git, .env, backups**  
 
-- Identificar sistema operativo.
-**TTL, nmap OS detection para saber si es Linux o Windows.**
+Identificar sistema operativo.  
+**nmap -O IP**  
+**TTL ping → Linux/Windows guess**
 
 ---
 
 ## 2. Escaneo de puertos
 
-- Escaneo completo de puertos.
-**nmap -p- para descubrir todos los puertos abiertos.**
+Escaneo completo de puertos.  
+**nmap -p- IP**
 
-- Identificar servicios.
-**nmap -sV para ver qué corre en cada puerto.**
+Identificar servicios.  
+**nmap -sV IP**
 
-- Revisar versiones.
-**nmap -sV -sC para obtener información detallada.**
+Revisar versiones.  
+**nmap -sV -sC IP**
 
-- Buscar vulnerabilidades.
-**nmap --script vuln para detectar fallos conocidos.**
+Buscar vulnerabilidades.  
+**nmap --script vuln IP**
 
-- Escaneo agresivo.
-**nmap -A para obtener OS, scripts y rutas.**
+Escaneo agresivo.  
+**nmap -A IP**
 
 ---
 
@@ -42,90 +49,68 @@
 
 ### Web
 
-- Analizar tecnologías.
-**whatweb, wappalyzer para detectar frameworks y CMS.**
+Analizar tecnologías.  
+**whatweb URL**  
+**wappalyzer**
 
-- Buscar rutas.
-**gobuster dir, ffuf para descubrir directorios ocultos.**
+Buscar rutas.  
+**gobuster dir -u URL -w wordlist**  
+**ffuf -u URL/FUZZ -w wordlist**
 
-- Buscar parámetros.
-**Burp Proxy + Repeater para interceptar y modificar requests.**
+Buscar parámetros.  
+**Burp Proxy + Repeater**
 
-- Probar extensiones.
-**gobuster -x php, txt, bak para encontrar archivos útiles.**
+Probar extensiones.  
+**gobuster -x php,txt,bak**
 
-- Fuzzing de parámetros.
-**wfuzz -w wordlist -u URL para probar valores vulnerables.**
+Fuzzing de parámetros.  
+**wfuzz -w wordlist -u URL -d "param=FUZZ"**
 
-- Revisar configuraciones.
-**headers, cookies, CORS, CSP para detectar fallos.**
+Revisar configuraciones.  
+**Revisar headers, cookies, CORS, CSP**
 
-- Descubrir API.
-**endpoints, métodos, tokens para ampliar vectores de ataque.**
+Descubrir API.  
+**Buscar /api, endpoints, métodos, tokens**
+
+---
 
 ### Servicios
 
-- SSH.
-**banners, claves, fuerza bruta con Hydra.**
+SSH.  
+**ssh user@IP**  
+**hydra -l user -P wordlist ssh://IP**
 
-- FTP.
-**anonymous login, ls, get para revisar archivos expuestos.**
+FTP.  
+**ftp IP**  
+**anonymous login → ls, get**
 
-- SMB.
-**enum4linux, smbclient para listar shares y usuarios.**
+SMB.  
+**enum4linux -a IP**  
+**smbclient -L //IP/**
 
-- Redis.
-**redis-cli info para ver configuración y datos expuestos.**
+Redis.  
+**redis-cli**  
+**redis-cli info**
 
-- MySQL.
-**mysql -u root -p para enumerar bases de datos.**
+MySQL.  
+**mysql -u root -p -h IP**
 
-- HTTP.
-**métodos, headers, cookies para detectar fallos.**
+HTTP.  
+**curl -I URL**  
+**Revisar métodos, headers, cookies**
 
-- Buscar usuarios.
-**Hydra, fuzzing de login para obtener credenciales.**
+Buscar usuarios.  
+**hydra -L users.txt -P pass.txt servicio://IP**
 
-- Buscar vulnerabilidades.
-**searchsploit, CVE lookup para encontrar exploits públicos.**
+Buscar vulnerabilidades.  
+**searchsploit servicio versión**  
+**CVE lookup**
 
-- Crackear claves SSH.
-**ssh2john + John para romper passphrases.**
+Crackear claves SSH.  
+**ssh2john id_rsa > hash.txt**  
+**john hash.txt --wordlist=rockyou.txt**
 
----
 
-## 4. Explotación
-
-- Encontrar vulnerabilidad.
-**LFI, RFI, SQLi, XSS, RCE, misconfigs según enumeración previa.**
-
-- Obtener acceso inicial.
-**credenciales, exploits, uploads, shells para entrar al sistema.**
-
-- Mantener sesión.
-**reverse shell, TTY upgrade, claves SSH para estabilidad.**
-
-- Fuerza bruta SSH.
-**hydra -l user -P wordlist ssh://IP para romper contraseñas.**
-
-- Manipular peticiones.
-**Burp Repeater para probar payloads y bypasses manuales.**
-
-- Probar extensiones en uploads.
-**Intruder + wordlist de extensiones para encontrar bypass de filtros.**
-
----
-
-## 5. Post-explotación y documentación
-
-- Confirmar nivel de acceso.
-**user, service, root para saber alcance.**
-
-- Recopilar evidencias.
-**outputs, logs, capturas para documentar el ataque.**
-
-- Registrar cada paso.
-**comandos, rutas, credenciales para reproducibilidad.**
 
 - Guardar pruebas.
 **hashes, shells, credenciales para reporte final.**
